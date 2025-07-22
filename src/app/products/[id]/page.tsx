@@ -1,16 +1,23 @@
-// src/app/products/[id]/page.tsx
-import { getProductById, getRelatedProducts, getAllProducts } from '@/app/lib/products';
-import Image from 'next/image';
-import { ProductDetails } from '@/app/components/ProductDetails';
-import { RelatedProducts } from '@/app/components/RelatedProducts';
+import {
+  getProductById,
+  getRelatedProducts,
+  getAllProducts,
+} from "@/app/lib/products";
+import Image from "next/image";
+import { ProductDetails } from "@/app/components/ProductDetails";
+import { RelatedProducts } from "@/app/components/RelatedProducts";
 
-type PageProps = {
-  params: {
-    id: string;
-  };
+// Define the type for the params object
+type ProductPageParams = {
+  id: string;
 };
 
-export default async function ProductPage({ params }: PageProps) {
+// Use this type directly in the function signature for clarity and consistency
+export default async function ProductPage({
+  params,
+}: {
+  params: ProductPageParams;
+}) {
   const product = await getProductById(params.id);
   const relatedProducts = await getRelatedProducts(params.id);
 
@@ -24,7 +31,11 @@ export default async function ProductPage({ params }: PageProps) {
         <div className="bg-white p-4 rounded-lg shadow-md">
           <div className="relative h-96 w-full">
             <Image
-              src={product.image.startsWith('http') ? product.image : `/products/${product.image}`}
+              src={
+                product.image.startsWith("http")
+                  ? product.image
+                  : `/products/${product.image}`
+              }
               alt={product.name}
               fill
               className="object-contain"
@@ -36,14 +47,18 @@ export default async function ProductPage({ params }: PageProps) {
       </div>
 
       {relatedProducts.length > 0 && (
-        <RelatedProducts products={relatedProducts} currentProductId={product.id} />
+        <RelatedProducts
+          products={relatedProducts}
+          currentProductId={product.id}
+        />
       )}
     </div>
   );
 }
 
-// ✅ Add this at the bottom of the same file
-export async function generateStaticParams() {
+// Add this at the bottom of the same file
+// Explicitly define the return type for generateStaticParams to match ProductPageParams
+export async function generateStaticParams(): Promise<ProductPageParams[]> {
   const allProducts = await getAllProducts();
   return allProducts.map((product) => ({
     id: product.id,
