@@ -3,7 +3,7 @@
 
 import { useCart } from '@/app/context/CartContext';
 import { useRouter } from 'next/navigation';
-import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useState } from 'react';
+import {  useState } from 'react';
 import { validateCheckoutForm } from '@/app/lib/utils';
 import Link from 'next/link';
 
