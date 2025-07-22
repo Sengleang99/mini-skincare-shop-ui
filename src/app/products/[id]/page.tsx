@@ -1,22 +1,16 @@
-import { getProductById, getRelatedProducts, getAllProducts } from '@/app/lib/products';
+import { getProductById, getRelatedProducts } from '@/app/lib/products';
 import Image from 'next/image';
 import { ProductDetails } from '@/app/components/ProductDetails';
 import { RelatedProducts } from '@/app/components/RelatedProducts';
 
-// Removed the separate ProductPageProps interface.
-// The type for params is now defined directly in the function signature for clarity and directness.
+type PageProps = {
+  params: { id: string };
+};
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
-  // The error "params should be awaited" is often misleading.
-  // It typically means Next.js's static analysis or build process
-  // is having trouble with the dynamic params in conjunction with generateStaticParams.
-  // The params object itself is not a Promise.
-  // By defining the type directly in the function signature and destructuring,
-  // we aim to provide the clearest possible type information to Next.js.
-  const { id } = params; // Destructure id from params
-
-  const product = await getProductById(id); // Use the destructured id
-  const relatedProducts = await getRelatedProducts(id); // Use the destructured id
+export default async function ProductPage({ params }: PageProps) {
+  const { id } = params;
+  const product = await getProductById(id);
+  const relatedProducts = await getRelatedProducts(id);
 
   if (!product) {
     return <div className="text-center text-red-500">Product not found</div>;
@@ -46,10 +40,10 @@ export default async function ProductPage({ params }: { params: { id: string } }
   );
 }
 
-// Explicitly define the return type for generateStaticParams.
-// This matches the structure of the params object expected by the page component.
-export async function generateStaticParams(): Promise<{ id: string }[]> {
+export async function generateStaticParams() {
+  const { getAllProducts } = await import('@/app/lib/products');
   const allProducts = await getAllProducts();
+
   return allProducts.map((product) => ({
     id: product.id,
   }));
