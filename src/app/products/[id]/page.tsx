@@ -1,18 +1,20 @@
 // src/app/products/[id]/page.tsx
+import {
+  getProductById,
+  getRelatedProducts,
+  getAllProducts,
+} from "@/app/lib/products";
+import Image from "next/image";
+import { ProductDetails } from "@/app/components/ProductDetails";
+import { RelatedProducts } from "@/app/components/RelatedProducts";
 
-import { getProductById, getRelatedProducts, getAllProducts } from '@/app/lib/products';
-import Image from 'next/image';
-import { ProductDetails } from '@/app/components/ProductDetails';
-import { RelatedProducts } from '@/app/components/RelatedProducts';
-
-type PageProps = {
+export default async function ProductPage({
+  params,
+}: {
   params: { id: string };
-};
-
-export default async function ProductPage({ params }: PageProps) {
-  const { id } = params;
-  const product = await getProductById(id);
-  const relatedProducts = await getRelatedProducts(id);
+}) {
+  const product = await getProductById(params.id);
+  const relatedProducts = await getRelatedProducts(params.id);
 
   if (!product) {
     return <div className="text-center text-red-500">Product not found</div>;
@@ -24,7 +26,11 @@ export default async function ProductPage({ params }: PageProps) {
         <div className="bg-white p-4 rounded-lg shadow-md">
           <div className="relative h-96 w-full">
             <Image
-              src={product.image.startsWith('http') ? product.image : `/products/${product.image}`}
+              src={
+                product.image.startsWith("http")
+                  ? product.image
+                  : `/products/${product.image}`
+              }
               alt={product.name}
               fill
               className="object-contain"
@@ -36,17 +42,21 @@ export default async function ProductPage({ params }: PageProps) {
       </div>
 
       {relatedProducts.length > 0 && (
-        <RelatedProducts products={relatedProducts} currentProductId={product.id} />
+        <RelatedProducts
+          products={relatedProducts}
+          currentProductId={product.id}
+        />
       )}
     </div>
   );
 }
 
-// ✅ FIXED: Wrap in `{ params: { id } }` to satisfy Next.js requirements
-export async function generateStaticParams() {
+// ✅ This must stay in the page.tsx file!
+export async function generateStaticParams(): Promise<
+  { params: { id: string } }[]
+> {
   const products = await getAllProducts();
-
   return products.map((product) => ({
-    params: { id: product.id }, // ✅ important
+    params: { id: product.id },
   }));
 }

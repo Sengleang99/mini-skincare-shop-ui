@@ -150,3 +150,5 @@ export async function generateStaticParams(): Promise<
     params: { id: product.id },
   }));
 }
+
+
