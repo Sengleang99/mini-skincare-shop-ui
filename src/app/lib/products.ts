@@ -141,3 +141,11 @@ export async function getRelatedProducts(id: string, limit = 4) {
     .filter((p) => p.id !== id && p.category === product.category)
     .slice(0, limit);
 }
+
+export async function generateStaticParams() {
+  const allProducts = await getAllProducts();
+
+  return allProducts.map((product) => ({
+    id: product.id.toString(),
+  }));
+}

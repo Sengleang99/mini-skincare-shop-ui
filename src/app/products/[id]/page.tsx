@@ -1,4 +1,4 @@
-import { getProductById, getRelatedProducts } from '@/app/lib/products';
+import { getAllProducts, getProductById, getRelatedProducts } from '@/app/lib/products';
 import Image from 'next/image';
 import { ProductDetails } from '@/app/components/ProductDetails';
 import { RelatedProducts } from '@/app/components/RelatedProducts';
@@ -41,10 +41,9 @@ export default async function ProductPage({ params }: PageProps) {
 }
 
 export async function generateStaticParams() {
-  const { getAllProducts } = await import('@/app/lib/products');
-  const allProducts = await getAllProducts();
+  const products = await getAllProducts();
 
-  return allProducts.map((product) => ({
-    id: product.id,
+  return products.map((product) => ({
+    id: product.id.toString(), // ensure id is a string
   }));
 }
