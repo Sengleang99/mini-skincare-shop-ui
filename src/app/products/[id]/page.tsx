@@ -1,4 +1,6 @@
-import { getAllProducts, getProductById, getRelatedProducts } from '@/app/lib/products';
+// src/app/products/[id]/page.tsx
+
+import { getProductById, getRelatedProducts, getAllProducts } from '@/app/lib/products';
 import Image from 'next/image';
 import { ProductDetails } from '@/app/components/ProductDetails';
 import { RelatedProducts } from '@/app/components/RelatedProducts';
@@ -40,10 +42,11 @@ export default async function ProductPage({ params }: PageProps) {
   );
 }
 
+// ✅ FIXED: Wrap in `{ params: { id } }` to satisfy Next.js requirements
 export async function generateStaticParams() {
   const products = await getAllProducts();
 
   return products.map((product) => ({
-    id: product.id.toString(), // ensure id is a string
+    params: { id: product.id }, // ✅ important
   }));
 }

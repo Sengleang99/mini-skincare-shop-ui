@@ -142,10 +142,11 @@ export async function getRelatedProducts(id: string, limit = 4) {
     .slice(0, limit);
 }
 
-export async function generateStaticParams() {
-  const allProducts = await getAllProducts();
-
-  return allProducts.map((product) => ({
-    id: product.id.toString(),
+export async function generateStaticParams(): Promise<
+  { params: { id: string } }[]
+> {
+  const products = await getAllProducts();
+  return products.map((product) => ({
+    params: { id: product.id },
   }));
 }
