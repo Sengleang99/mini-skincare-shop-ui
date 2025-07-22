@@ -1,4 +1,3 @@
-// src/context/CartContext.tsx
 "use client";
 
 import {
@@ -11,11 +10,6 @@ import {
 import { Product } from "@/app/type/types";
 
 interface CartItem extends Product {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  description: string;
   quantity: number;
 }
 
@@ -36,7 +30,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Load cart from localStorage on mount
   useEffect(() => {
     setIsMounted(true);
     const savedCart = localStorage.getItem("skincare-cart");
@@ -50,7 +43,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  // Save cart to localStorage whenever it changes
   useEffect(() => {
     if (isMounted) {
       localStorage.setItem("skincare-cart", JSON.stringify(cart));

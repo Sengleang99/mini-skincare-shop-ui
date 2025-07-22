@@ -1,19 +1,19 @@
 // src/components/AuthForm.tsx
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/app/context/AuthContext';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/context/AuthContext";
 
 interface AuthFormProps {
-  type: 'login' | 'register';
+  type: "login" | "register";
 }
 
 export default function AuthForm({ type }: AuthFormProps) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login, register } = useAuth();
   const router = useRouter();
@@ -21,17 +21,17 @@ export default function AuthForm({ type }: AuthFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
 
     try {
-      if (type === 'login') {
+      if (type === "login") {
         await login(email, password);
       } else {
         await register(name, email, password);
       }
-      router.push('/');
+      router.push("/");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -40,13 +40,15 @@ export default function AuthForm({ type }: AuthFormProps) {
   return (
     <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
       <h1 className="text-2xl font-bold mb-6 text-center">
-        {type === 'login' ? 'Login' : 'Register'}
+        {type === "login" ? "Login" : "Register"}
       </h1>
       {error && <div className="mb-4 text-rose-500 text-sm">{error}</div>}
       <form onSubmit={handleSubmit} className="space-y-4">
-        {type === 'register' && (
+        {type === "register" && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Name
+            </label>
             <input
               type="text"
               value={name}
@@ -57,7 +59,9 @@ export default function AuthForm({ type }: AuthFormProps) {
           </div>
         )}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Email
+          </label>
           <input
             type="email"
             value={email}
@@ -67,7 +71,9 @@ export default function AuthForm({ type }: AuthFormProps) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Password
+          </label>
           <input
             type="password"
             value={password}
@@ -82,20 +88,24 @@ export default function AuthForm({ type }: AuthFormProps) {
           disabled={isLoading}
           className="w-full bg-rose-500 text-white py-2 rounded-md hover:bg-rose-600 transition-colors disabled:opacity-50"
         >
-          {isLoading ? 'Processing...' : type === 'login' ? 'Login' : 'Register'}
+          {isLoading
+            ? "Processing..."
+            : type === "login"
+            ? "Login"
+            : "Register"}
         </button>
       </form>
       <div className="mt-4 text-center text-sm">
-        {type === 'login' ? (
+        {type === "login" ? (
           <p>
-            Don&apos;t have an account?{' '}
+            Don&apos;t have an account?{" "}
             <a href="/register" className="text-rose-500 hover:underline">
               Register
             </a>
           </p>
         ) : (
           <p>
-            Already have an account?{' '}
+            Already have an account?{" "}
             <a href="/login" className="text-rose-500 hover:underline">
               Login
             </a>
