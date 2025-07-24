@@ -11,10 +11,14 @@ import { RelatedProducts } from "@/app/components/RelatedProducts";
 export default async function ProductPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>; // <--- CHANGE THIS TYPE TO A PROMISE
 }) {
-  const product = await getProductById(params.id);
-  const relatedProducts = await getRelatedProducts(params.id);
+  // Await params to get the actual object
+  const resolvedParams = await params;
+  const productId = resolvedParams.id; // Access id from the awaited object
+
+  const product = await getProductById(productId);
+  const relatedProducts = await getRelatedProducts(productId);
 
   if (!product) {
     return <div className="text-center text-red-500">Product not found</div>;
