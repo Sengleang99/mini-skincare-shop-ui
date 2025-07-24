@@ -1,22 +1,25 @@
-// src/app/products/[id]/page.tsx
 import {
   getProductById,
   getRelatedProducts,
-  getAllProducts,
+  getAllProducts, // Make sure getAllProducts is imported for generateStaticParams
 } from "@/app/lib/products";
 import Image from "next/image";
 import { ProductDetails } from "@/app/components/ProductDetails";
 import { RelatedProducts } from "@/app/components/RelatedProducts";
 
-export default async function ProductPage({
-  params,
-}: {
-  params: Promise<{ id: string }>; // <--- CHANGE THIS TYPE TO A PROMISE
-}) {
-  // Await params to get the actual object
-  const resolvedParams = await params;
-  const productId = resolvedParams.id; // Access id from the awaited object
+// Define the props type for the page component, noting params is a Promise
+interface ProductPageProps {
+  params: Promise<{ id: string }>; // params is now a Promise in Next.js 15
+  // If you were using searchParams, they would also be a Promise:
+  // searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}
 
+export default async function ProductPage({ params }: ProductPageProps) {
+  // Await the params Promise to get the actual object
+  const resolvedParams = await params;
+  const productId = resolvedParams.id; // Access id from the resolved object
+
+  // Fetch product data using the resolved productId
   const product = await getProductById(productId);
   const relatedProducts = await getRelatedProducts(productId);
 
@@ -55,12 +58,12 @@ export default async function ProductPage({
   );
 }
 
-// ✅ This must stay in the page.tsx file!
-export async function generateStaticParams(): Promise<
-  { params: { id: string } }[]
-> {
+// generateStaticParams should remain in the page.tsx file
+// It provides the paths for static generation at build time.
+export async function generateStaticParams(): Promise<{ id: string }[]> {
+  // Use your data fetching function to get all product IDs
   const products = await getAllProducts();
   return products.map((product) => ({
-    params: { id: product.id },
+    id: product.id, // The 'id' here is the dynamic segment value
   }));
 }
